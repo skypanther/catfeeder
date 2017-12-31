@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/timpoulsen/Documents/temp/python/machinelearning/dogs-vs-cats-convnet-5layer"
+all_model_checkpoint_paths: "/Users/timpoulsen/Documents/temp/python/machinelearning/dogs-vs-cats-convnet-5layer"
