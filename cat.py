@@ -10,11 +10,13 @@ from tflearn.layers.conv import conv_2d, max_pool_2d
 from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.estimator import regression
 
-TRAIN_DIR = 'train'
-TEST_DIR = 'test'
+TRAIN_DIR = 'train_two'
+TEST_DIR = 'test_two'
 IMG_SIZE = 50
 LR = 1e-3
-MODEL_NAME = 'dogs-vs-cats-convnet-5layer'
+MODEL_NAME = 'more_data_5layer'
+TRAIN_DATA_NAME = 'train_data_{}.npy'.format(MODEL_NAME)
+TEST_DATA_NAME = 'test_data_{}.npy'.format(MODEL_NAME)
 
 
 def create_label(image_name):
@@ -22,19 +24,23 @@ def create_label(image_name):
     word_label = image_name.split('.')[-3]
     if word_label == 'cat':
         return np.array([1, 0])
-    elif word_label == 'dog':
+    else:
         return np.array([0, 1])
 
 
 def create_train_data():
     training_data = []
     for img in tqdm(os.listdir(TRAIN_DIR)):
+        if img == ".DS_Store":
+            continue
         path = os.path.join(TRAIN_DIR, img)
         img_data = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        if img_data is None:
+            continue
         img_data = cv2.resize(img_data, (IMG_SIZE, IMG_SIZE))
         training_data.append([np.array(img_data), create_label(img)])
     shuffle(training_data)
-    np.save('train_data.npy', training_data)
+    np.save(TRAIN_DATA_NAME, training_data)
     return training_data
 
 
@@ -44,20 +50,23 @@ def create_test_data():
         path = os.path.join(TEST_DIR, img)
         img_num = img.split('.')[0]
         img_data = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        if img_data is None:
+            continue
         img_data = cv2.resize(img_data, (IMG_SIZE, IMG_SIZE))
         testing_data.append([np.array(img_data), img_num])
     shuffle(testing_data)
-    np.save('test_data.npy', testing_data)
+    np.save(TEST_DATA_NAME, testing_data)
     return testing_data
 
 
-# If dataset is not created, uncomment:
-# train_data = create_train_data()
-train_data = np.load('train_data.npy')
-# If dataset is not created, uncomment:
-# test_data = create_test_data()
-test_data = np.load('test_data.npy')
-
+if os.path.exists(TRAIN_DATA_NAME):
+    train_data = np.load(TRAIN_DATA_NAME)
+else:
+    train_data = create_train_data()
+if os.path.exists(TEST_DATA_NAME):
+    test_data = np.load(TEST_DATA_NAME)
+else:
+    test_data = create_test_data()
 
 train = train_data[:-500]
 test = train_data[-500:]
@@ -108,6 +117,7 @@ else:
 
 # test the model vs the actual test data
 fig = plt.figure(figsize=(16, 12))
+shuffle(test_data)
 for num, data in enumerate(test_data[:16]):
     img_num = data[1]
     img_data = data[0]

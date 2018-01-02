@@ -2,6 +2,9 @@
 # https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data
 test/
 train/
+# additional data sets
+train_two/
+test_two/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
