@@ -37,9 +37,18 @@ while True:
     maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, kernelClose)
 
     maskFinal = maskClose
-    _, conts, h = cv2.findContours(maskFinal.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    _, conts, h = cv2.findContours(
+        maskFinal.copy(),
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_NONE)
 
     cv2.drawContours(img, conts, -1, (255, 0, 0), 3)
+
+    if len(conts):
+        for i in range(len(conts)):
+            if cv2.contourArea(conts[i]) > 1800:
+                print("big orange area, probably Marmalade")
+
     # for i in range(len(conts)):
     #     x, y, w, h = cv2.boundingRect(conts[i])
     #     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
@@ -48,4 +57,4 @@ while True:
     cv2.imshow("maskOpen", maskOpen)
     cv2.imshow("mask", mask)
     cv2.imshow("cam", img)
-    cv2.waitKey(10)
+    cv2.waitKey(100)
