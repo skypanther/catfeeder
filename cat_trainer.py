@@ -14,7 +14,7 @@ TRAIN_DIR = 'train_two'
 TEST_DIR = 'test_two'
 IMG_SIZE = 50
 LR = 1e-3
-MODEL_NAME = 'more_data_5layer'
+MODEL_NAME = 'even_moar_data'
 TRAIN_DATA_NAME = 'train_data_{}.npy'.format(MODEL_NAME)
 TEST_DATA_NAME = 'test_data_{}.npy'.format(MODEL_NAME)
 
@@ -97,7 +97,12 @@ convnet = fully_connected(convnet, 1024, activation='relu')
 convnet = dropout(convnet, 0.8)
 
 convnet = fully_connected(convnet, 2, activation='softmax')
-convnet = regression(convnet, optimizer='adam', learning_rate=LR, loss='categorical_crossentropy', name='targets')
+convnet = regression(
+    convnet,
+    optimizer='adam',
+    learning_rate=LR,
+    loss='categorical_crossentropy',
+    name='targets')
 
 model = tflearn.DNN(convnet, tensorboard_dir='log')
 
@@ -111,8 +116,14 @@ else:
     Y = [i[1] for i in train]
     test_x = np.array([i[0] for i in test]).reshape(-1, IMG_SIZE, IMG_SIZE, 1)
     test_y = [i[1] for i in test]
-    model.fit({'input': X}, {'targets': Y}, n_epoch=10, validation_set=({'input': test_x}, {'targets': test_y}), 
-        snapshot_step=500, show_metric=True, run_id=MODEL_NAME)
+    model.fit(
+        {'input': X},
+        {'targets': Y},
+        n_epoch=10,
+        validation_set=({'input': test_x}, {'targets': test_y}),
+        snapshot_step=500,
+        show_metric=True,
+        run_id=MODEL_NAME)
     model.save(MODEL_NAME)
 
 # test the model vs the actual test data

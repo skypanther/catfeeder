@@ -1,10 +1,11 @@
-# omit testing & training images from repo, get them from
-# https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data
+# omit testing & training images from repo,
+# see readme for sources
 test/
 train/
-# additional data sets
 train_two/
 test_two/
+# omit npy processed source images
+*.npy
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
