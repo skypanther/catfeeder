@@ -5,6 +5,9 @@ Follow install instructions there
 
 import RPi.GPIO as GPIO
 import datetime
+from time import sleep
+
+PAUSE = 2  # seconds
 
 
 class FeederController:
@@ -49,7 +52,8 @@ class FeederController:
             now = datetime.now()
             num_seconds = (start_time - now).total_seconds()
             pir_value = GPIO.input(self.pir_pin)
-            if pir_value == 0 or num_seconds > wait_time_seconds:
+            if num_seconds > wait_time_seconds and pir_value == 0:
                 # no cat or cat left
                 keep_looking = False
                 self.close_food_bowl()
+            sleep(PAUSE)
