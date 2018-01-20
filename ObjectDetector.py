@@ -46,7 +46,7 @@ class ObjectDetector:
         self.MODEL = tflearn.DNN(convnet, tensorboard_dir='log')
         self.MODEL.load(self.MODEL_NAME)
 
-    def isCatVisible(self, img):
+    def is_cat_visible(self, img):
         resized_image = cv2.resize(img, (self.IMG_SIZE, self.IMG_SIZE))
         resized_image_grayscale = cv2.cvtColor(
             resized_image,

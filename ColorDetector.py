@@ -3,52 +3,51 @@ import numpy as np
 
 
 class ColorDetector:
-    IMG_SIZE = 320
+    IMG_WIDTH = 640
+    IMG_HEIGHT = 480
     kernelOpen = np.ones((5, 5))  # for drawing the "open" mask
     kernelClose = np.ones((20, 20))  # for draing the "closed" mask
-    # lowerBound = np.array([3, 30, 120])  # dark orange
-    # upperBound = np.array([53, 255, 255])  # bright orange
 
     def __init__(self, min_area):
         self.MIN_ORANGE_AREA = min_area
 
-    def setColorRange(self, lowerBound, upperBound):
+    def set_color_range(self, lowerBound, upperBound):
         self.lowerBound = lowerBound
         self.upperBound = upperBound
 
-    def setupPreviewWindows(self):
+    def setup_preview_windows(self):
         cv2.namedWindow("maskClose")
-        cv2.moveWindow("maskClose", 40, 320)
+        cv2.moveWindow("maskClose", 40, self.IMG_HEIGHT)
         cv2.namedWindow("mask")
-        cv2.moveWindow("mask", 380, 40)
+        cv2.moveWindow("mask", self.IMG_WIDTH, 40)
         cv2.namedWindow("maskOpen")
-        cv2.moveWindow("maskOpen", 380, 320)
+        cv2.moveWindow("maskOpen", self.IMG_WIDTH, self.IMG_HEIGHT)
 
-    def isRightCatVisible(self, img, showWindows=False):
-        resized_image = cv2.resize(img, (self.IMG_SIZE, self.IMG_SIZE))
+    def is_right_cat_visible(self, img, show_windows=False):
+        resized_image = cv2.resize(img, (self.IMG_WIDTH, self.IMG_WIDTH))
         imgHSV = cv2.cvtColor(resized_image, cv2.COLOR_BGR2HSV)
-        # create the Mask
+        # create the mask
         mask = cv2.inRange(
             imgHSV,
             self.lowerBound,
             self.upperBound)
-        # morphology
+        # remove noise with morphological "open"
         maskOpen = cv2.morphologyEx(
             mask,
             cv2.MORPH_OPEN,
             self.kernelOpen)
+        # close up internal holes in contours with "close"
         maskClose = cv2.morphologyEx(
             maskOpen,
             cv2.MORPH_CLOSE,
             self.kernelClose)
 
-        maskFinal = maskClose
         _, conts, h = cv2.findContours(
-            maskFinal.copy(),
+            maskClose.copy(),
             cv2.RETR_EXTERNAL,
             cv2.CHAIN_APPROX_NONE)
 
-        if showWindows:
+        if show_windows:
             cv2.drawContours(resized_image, conts, -1, (255, 0, 0), 3)
             cv2.imshow("maskClose", maskClose)
             cv2.imshow("maskOpen", maskOpen)
