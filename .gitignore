@@ -1,3 +1,7 @@
+# ignore the weights file since it's too large for GitHub
+# instead, download directly from https://pjreddie.com/media/files/yolov3.weights
+yolo-coco/yolov3.weights
+
 # omit testing & training images from repo,
 # see readme for sources
 test/
